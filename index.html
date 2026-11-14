@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="my">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Spinning Arrow</title>
+  <style>
+    body {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      margin: 0;
+      background-color: #f0f4f8;
+      font-family: sans-serif;
+    }
+    .dial {
+      position: relative;
+      width: 220px;
+      height: 220px;
+      border-radius: 50%;
+      background: #ffffff;
+      border: 8px solid #334155;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 30px;
+    }
+    /* လက်တံမျှား */
+    .arrow {
+      position: absolute;
+      width: 6px;
+      height: 160px;
+      transition: transform 1s cubic-bezier(0.25, 0.1, 0.25, 1);
+    }
+    /* မျှားခေါင်း */
+    .arrow::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      border-left: 14px solid transparent;
+      border-right: 14px solid transparent;
+      border-bottom: 28px solid #ef4444;
+    }
+    /* မျှားတံအရိုး */
+    .arrow::after {
+      content: '';
+      position: absolute;
+      top: 26px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 6px;
+      height: 65px;
+      background-color: #ef4444;
+      border-radius: 3px;
+    }
+    /* အလယ်ဗဟိုအစက် */
+    .center-dot {
+      width: 18px;
+      height: 18px;
+      background-color: #1e293b;
+      border-radius: 50%;
+      z-index: 2;
+    }
+    button {
+      padding: 12px 32px;
+      font-size: 18px;
+      font-weight: bold;
+      color: #ffffff;
+      background-color: #2563eb;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      box-shadow: 0 4px 6px rgba(37, 99, 235, 0.3);
+      transition: background-color 0.2s;
+    }
+    button:hover {
+      background-color: #1d4ed8;
+    }
+    button:disabled {
+      background-color: #94a3b8;
+      cursor: not-allowed;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="dial">
+    <div class="arrow" id="arrow"></div>
+    <div class="center-dot"></div>
+  </div>
+
+  <button id="spinBtn">လှည့်မယ်</button>
+
+  <script>
+    const arrow = document.getElementById('arrow');
+    const spinBtn = document.getElementById('spinBtn');
+    let currentRotation = 0;
+
+    spinBtn.addEventListener('click', () => {
+      // လည်နေချိန် ခလုတ်ထပ်နှိပ်မရအောင် ခဏပိတ်ထားမယ်
+      spinBtn.disabled = true;
+
+      // အနည်းဆုံး ၂ ပတ် (720 deg) နဲ့ ကျပန်းဒီဂရီ (0 - 360) ပေါင်းလှည့်မယ်
+      const randomDeg = Math.floor(Math.random() * 360);
+      currentRotation += 720 + randomDeg;
+
+      arrow.style.transform = `rotate(${currentRotation}deg)`;
+
+      // ၁ စက္ကန့် (1000ms) ပြည့်ရင် လက်တံရပ်ပြီး ခလုတ်ပြန်ဖွင့်မယ်
+      setTimeout(() => {
+        spinBtn.disabled = false;
+      }, 1000);
+    });
+  </script>
+
+</body>
+  </html>
+  
