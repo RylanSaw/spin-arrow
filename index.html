@@ -3,38 +3,106 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Spinning Arrow</title>
+  <title>Galaxy Spinning Arrow</title>
   <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
     body {
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      height: 100vh;
-      margin: 0;
-      background-color: #f0f4f8;
+      height: 100dvh;
+      overflow: hidden;
+      background: radial-gradient(ellipse at bottom, #1b2735 0%, #090a0f 100%);
       font-family: sans-serif;
+      position: relative;
     }
+
+    /* Galaxy နဂါးငွေ့တန်း အရောင်ပြေး အလင်းတိမ်တိုက်များ */
+    .nebula {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      background:
+        radial-gradient(circle at 20% 30%, rgba(139, 92, 246, 0.28) 0%, transparent 45%),
+        radial-gradient(circle at 80% 70%, rgba(236, 72, 153, 0.22) 0%, transparent 45%),
+        radial-gradient(circle at 50% 50%, rgba(56, 189, 248, 0.15) 0%, transparent 60%);
+      filter: blur(20px);
+      z-index: 0;
+      pointer-events: none;
+    }
+
+    /* ကြယ်များထည့်မည့်အလွှာ */
+    .stars-container {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      z-index: 1;
+      pointer-events: none;
+    }
+
+    .star {
+      position: absolute;
+      background-color: #ffffff;
+      border-radius: 50%;
+      animation: twinkle var(--duration) infinite ease-in-out;
+      opacity: var(--opacity);
+    }
+
+    @keyframes twinkle {
+      0%, 100% {
+        opacity: var(--opacity);
+        transform: scale(1);
+      }
+      50% {
+        opacity: 0.15;
+        transform: scale(0.7);
+      }
+    }
+
+    /* အာကာသ ဒိုင်ခွက် */
     .dial {
       position: relative;
-      width: 220px;
-      height: 220px;
+      width: 240px;
+      height: 240px;
       border-radius: 50%;
-      background: #ffffff;
-      border: 8px solid #334155;
-      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+      background: rgba(15, 23, 42, 0.55);
+      backdrop-filter: blur(8px);
+      border: 3px solid rgba(167, 139, 250, 0.7);
+      box-shadow:
+        0 0 35px rgba(139, 92, 246, 0.45),
+        inset 0 0 25px rgba(56, 189, 248, 0.25);
       display: flex;
       align-items: center;
       justify-content: center;
-      margin-bottom: 30px;
+      margin-bottom: 40px;
+      z-index: 2;
     }
+
+    /* ဒိုင်ခွက်အတွင်း အနားသတ်စက်ဝိုင်း */
+    .dial::before {
+      content: '';
+      position: absolute;
+      width: 205px;
+      height: 205px;
+      border-radius: 50%;
+      border: 1px dashed rgba(148, 163, 184, 0.35);
+    }
+
     /* လက်တံမျှား */
     .arrow {
       position: absolute;
-      width: 6px;
-      height: 160px;
-      transition: transform 1s cubic-bezier(0.25, 0.1, 0.25, 1);
+      width: 8px;
+      height: 175px;
+      transition: transform 1s cubic-bezier(0.22, 1, 0.36, 1);
+      filter: drop-shadow(0 0 10px rgba(56, 189, 248, 0.9));
     }
+
     /* မျှားခေါင်း */
     .arrow::before {
       content: '';
@@ -42,52 +110,66 @@
       top: 0;
       left: 50%;
       transform: translateX(-50%);
-      border-left: 14px solid transparent;
-      border-right: 14px solid transparent;
-      border-bottom: 28px solid #ef4444;
+      border-left: 15px solid transparent;
+      border-right: 15px solid transparent;
+      border-bottom: 30px solid #38bdf8;
     }
+
     /* မျှားတံအရိုး */
     .arrow::after {
       content: '';
       position: absolute;
-      top: 26px;
+      top: 28px;
       left: 50%;
       transform: translateX(-50%);
       width: 6px;
-      height: 65px;
-      background-color: #ef4444;
+      height: 70px;
+      background: linear-gradient(to bottom, #38bdf8, #a855f7);
       border-radius: 3px;
     }
-    /* အလယ်ဗဟိုအစက် */
+
+    /* အလယ်ဗဟို အလင်းစက် */
     .center-dot {
-      width: 18px;
-      height: 18px;
-      background-color: #1e293b;
+      width: 20px;
+      height: 20px;
+      background: radial-gradient(circle, #ffffff 20%, #38bdf8 80%);
       border-radius: 50%;
-      z-index: 2;
+      box-shadow: 0 0 15px #38bdf8;
+      z-index: 3;
     }
+
+    /* ခလုတ် */
     button {
-      padding: 12px 32px;
+      position: relative;
+      z-index: 2;
+      padding: 14px 38px;
       font-size: 18px;
       font-weight: bold;
       color: #ffffff;
-      background-color: #2563eb;
-      border: none;
-      border-radius: 8px;
+      background: linear-gradient(135deg, #6366f1 0%, #a855f7 50%, #ec4899 100%);
+      border: 1px solid rgba(255, 255, 255, 0.25);
+      border-radius: 30px;
       cursor: pointer;
-      box-shadow: 0 4px 6px rgba(37, 99, 235, 0.3);
-      transition: background-color 0.2s;
+      touch-action: manipulation;
+      box-shadow: 0 0 20px rgba(168, 85, 247, 0.55);
+      transition: transform 0.15s, box-shadow 0.2s, opacity 0.2s;
     }
-    button:hover {
-      background-color: #1d4ed8;
+
+    button:active {
+      transform: scale(0.96);
     }
+
     button:disabled {
-      background-color: #94a3b8;
+      opacity: 0.55;
       cursor: not-allowed;
+      box-shadow: none;
     }
   </style>
 </head>
 <body>
+
+  <div class="nebula"></div>
+  <div class="stars-container" id="stars"></div>
 
   <div class="dial">
     <div class="arrow" id="arrow"></div>
@@ -97,21 +179,39 @@
   <button id="spinBtn">လှည့်မယ်</button>
 
   <script>
+    // နောက်ခံကြယ်လေးများ ဖန်တီးခြင်း
+    const starsContainer = document.getElementById('stars');
+    const starCount = 120;
+
+    for (let i = 0; i < starCount; i++) {
+      const star = document.createElement('div');
+      star.classList.add('star');
+      
+      const size = Math.random() * 2.5 + 1;
+      star.style.width = `${size}px`;
+      star.style.height = `${size}px`;
+      star.style.left = `${Math.random() * 100}%`;
+      star.style.top = `${Math.random() * 100}%`;
+      star.style.setProperty('--duration', `${Math.random() * 3 + 2}s`);
+      star.style.setProperty('--opacity', `${Math.random() * 0.7 + 0.3}`);
+      
+      starsContainer.appendChild(star);
+    }
+
+    // လက်တံလှည့်ခြင်း
     const arrow = document.getElementById('arrow');
     const spinBtn = document.getElementById('spinBtn');
     let currentRotation = 0;
 
     spinBtn.addEventListener('click', () => {
-      // လည်နေချိန် ခလုတ်ထပ်နှိပ်မရအောင် ခဏပိတ်ထားမယ်
       spinBtn.disabled = true;
 
-      // အနည်းဆုံး ၂ ပတ် (720 deg) နဲ့ ကျပန်းဒီဂရီ (0 - 360) ပေါင်းလှည့်မယ်
       const randomDeg = Math.floor(Math.random() * 360);
       currentRotation += 720 + randomDeg;
 
       arrow.style.transform = `rotate(${currentRotation}deg)`;
 
-      // ၁ စက္ကန့် (1000ms) ပြည့်ရင် လက်တံရပ်ပြီး ခလုတ်ပြန်ဖွင့်မယ်
+      // ၁ စက္ကန့်ပြည့်ရင် ရပ်ပြီး ခလုတ်ပြန်ဖွင့်မယ်
       setTimeout(() => {
         spinBtn.disabled = false;
       }, 1000);
@@ -119,5 +219,5 @@
   </script>
 
 </body>
-  </html>
-  
+                        </html>
+                        
