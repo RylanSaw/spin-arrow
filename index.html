@@ -320,6 +320,59 @@
     });
   </script>
 
+  <!-- TikTok Rose လက်ဆောင်ဝင်တာနဲ့ spinBtn ကို အလိုအလျောက် နှိပ်ပေးမည့် Firebase Script -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+    import { getDatabase, ref, onChildAdded } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
+
+    const firebaseConfig = {
+      databaseURL: "https://tiktok-live-trigger-default-rtdb.asia-southeast1.firebasedatabase.app"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase(app);
+    const rosesRef = ref(db, "roses");
+
+    const TARGET_BUTTON_ID = "spinBtn";
+    // မျှားလည်ချိန် 1000ms + အဖြေမီးလင်းပြချိန် 600ms = 1600ms
+    const COOLDOWN_MS = 1600;
+
+    let isInitialLoad = true;
+    let roseQueue = 0;
+    let isProcessing = false;
+
+    setTimeout(() => {
+      isInitialLoad = false;
+    }, 2000);
+
+    function processQueue() {
+      if (isProcessing || roseQueue <= 0) return;
+
+      const btn = document.getElementById(TARGET_BUTTON_ID);
+      if (!btn) return;
+
+      // လက်ရှိမျှားလည်နေဆဲ (button disabled ဖြစ်နေဆဲ) ဆိုရင် ခဏစောင့်ပြီး ပြန်စစ်မည်
+      if (btn.disabled) {
+        setTimeout(processQueue, 250);
+        return;
+      }
+
+      isProcessing = true;
+      roseQueue--;
+      btn.click();
+
+      setTimeout(() => {
+        isProcessing = false;
+        processQueue();
+      }, COOLDOWN_MS);
+    }
+
+    onChildAdded(rosesRef, (snapshot) => {
+      if (isInitialLoad) return;
+      roseQueue++;
+      processQueue();
+    });
+  </script>
+
 </body>
-  </html>
-  
+</html>
