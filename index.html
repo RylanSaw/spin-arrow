@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Galaxy Spinning Arrow</title>
+  <title>Galaxy Fortune Arrow</title>
   <style>
     * {
       box-sizing: border-box;
@@ -21,9 +21,10 @@
       background: radial-gradient(ellipse at bottom, #1b2735 0%, #090a0f 100%);
       font-family: sans-serif;
       position: relative;
+      color: #ffffff;
     }
 
-    /* Galaxy နဂါးငွေ့တန်း အရောင်ပြေး အလင်းတိမ်တိုက်များ */
+    /* Galaxy အလင်းတိမ်တိုက်များ */
     .nebula {
       position: absolute;
       width: 100%;
@@ -37,7 +38,7 @@
       pointer-events: none;
     }
 
-    /* ကြယ်များထည့်မည့်အလွှာ */
+    /* ကြယ်များ */
     .stars-container {
       position: absolute;
       width: 100%;
@@ -65,31 +66,110 @@
       }
     }
 
-    /* အာကာသ ဒိုင်ခွက် */
-    .dial {
+    /* စက်ဝိုင်းနှင့် ဘေးပတ်လည်အကွက်များ စုစည်းရာနေရာ */
+    .wheel-wrapper {
       position: relative;
-      width: 240px;
-      height: 240px;
-      border-radius: 50%;
-      background: rgba(15, 23, 42, 0.55);
-      backdrop-filter: blur(8px);
-      border: 3px solid rgba(167, 139, 250, 0.7);
-      box-shadow:
-        0 0 35px rgba(139, 92, 246, 0.45),
-        inset 0 0 25px rgba(56, 189, 248, 0.25);
+      width: 350px;
+      height: 350px;
       display: flex;
       align-items: center;
       justify-content: center;
-      margin-bottom: 40px;
+      margin-bottom: 32px;
       z-index: 2;
     }
 
-    /* ဒိုင်ခွက်အတွင်း အနားသတ်စက်ဝိုင်း */
+    /* စာသားအကွက်များ */
+    .label-box {
+      position: absolute;
+      padding: 10px 12px;
+      background: rgba(15, 23, 42, 0.72);
+      backdrop-filter: blur(8px);
+      border: 1.5px solid rgba(167, 139, 250, 0.45);
+      border-radius: 14px;
+      font-size: 13px;
+      font-weight: bold;
+      line-height: 1.4;
+      text-align: center;
+      color: #e2e8f0;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
+      transition: all 0.3s ease;
+      z-index: 3;
+    }
+
+    /* မျှားထိုးပြခံရသည့်အခါ လင်းလက်မည့်ဒီဇိုင်း */
+    .label-box.active {
+      background: linear-gradient(135deg, rgba(56, 189, 248, 0.35), rgba(168, 85, 247, 0.45));
+      border-color: #38bdf8;
+      color: #ffffff;
+      transform: scale(1.08);
+      box-shadow:
+        0 0 20px rgba(56, 189, 248, 0.8),
+        0 0 35px rgba(168, 85, 247, 0.6);
+    }
+
+    /* အကွက် ၄ ခု နေရာချထားခြင်း */
+    .pos-top {
+      top: 12px;
+      left: 50%;
+      transform: translateX(-50%);
+      min-width: 130px;
+    }
+    .pos-top.active {
+      transform: translateX(-50%) scale(1.08);
+    }
+
+    .pos-right {
+      right: 2px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 96px;
+    }
+    .pos-right.active {
+      transform: translateY(-50%) scale(1.08);
+    }
+
+    .pos-bottom {
+      bottom: 12px;
+      left: 50%;
+      transform: translateX(-50%);
+      min-width: 145px;
+    }
+    .pos-bottom.active {
+      transform: translateX(-50%) scale(1.08);
+    }
+
+    .pos-left {
+      left: 2px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 96px;
+    }
+    .pos-left.active {
+      transform: translateY(-50%) scale(1.08);
+    }
+
+    /* အလယ် အာကာသ ဒိုင်ခွက် */
+    .dial {
+      position: relative;
+      width: 140px;
+      height: 140px;
+      border-radius: 50%;
+      background: rgba(15, 23, 42, 0.65);
+      backdrop-filter: blur(8px);
+      border: 3px solid rgba(167, 139, 250, 0.75);
+      box-shadow:
+        0 0 30px rgba(139, 92, 246, 0.45),
+        inset 0 0 20px rgba(56, 189, 248, 0.25);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
     .dial::before {
       content: '';
       position: absolute;
-      width: 205px;
-      height: 205px;
+      width: 116px;
+      height: 116px;
       border-radius: 50%;
       border: 1px dashed rgba(148, 163, 184, 0.35);
     }
@@ -97,10 +177,10 @@
     /* လက်တံမျှား */
     .arrow {
       position: absolute;
-      width: 8px;
-      height: 175px;
+      width: 24px;
+      height: 110px;
       transition: transform 1s cubic-bezier(0.22, 1, 0.36, 1);
-      filter: drop-shadow(0 0 10px rgba(56, 189, 248, 0.9));
+      filter: drop-shadow(0 0 8px rgba(56, 189, 248, 0.95));
     }
 
     /* မျှားခေါင်း */
@@ -110,31 +190,31 @@
       top: 0;
       left: 50%;
       transform: translateX(-50%);
-      border-left: 15px solid transparent;
-      border-right: 15px solid transparent;
-      border-bottom: 30px solid #38bdf8;
+      border-left: 11px solid transparent;
+      border-right: 11px solid transparent;
+      border-bottom: 22px solid #38bdf8;
     }
 
     /* မျှားတံအရိုး */
     .arrow::after {
       content: '';
       position: absolute;
-      top: 28px;
+      top: 20px;
       left: 50%;
       transform: translateX(-50%);
-      width: 6px;
-      height: 70px;
+      width: 5px;
+      height: 42px;
       background: linear-gradient(to bottom, #38bdf8, #a855f7);
       border-radius: 3px;
     }
 
     /* အလယ်ဗဟို အလင်းစက် */
     .center-dot {
-      width: 20px;
-      height: 20px;
+      width: 16px;
+      height: 16px;
       background: radial-gradient(circle, #ffffff 20%, #38bdf8 80%);
       border-radius: 50%;
-      box-shadow: 0 0 15px #38bdf8;
+      box-shadow: 0 0 12px #38bdf8;
       z-index: 3;
     }
 
@@ -142,7 +222,7 @@
     button {
       position: relative;
       z-index: 2;
-      padding: 14px 38px;
+      padding: 14px 40px;
       font-size: 18px;
       font-weight: bold;
       color: #ffffff;
@@ -171,9 +251,18 @@
   <div class="nebula"></div>
   <div class="stars-container" id="stars"></div>
 
-  <div class="dial">
-    <div class="arrow" id="arrow"></div>
-    <div class="center-dot"></div>
+  <div class="wheel-wrapper">
+    <!-- အရပ် ၄ မျက်နှာ စာသားအကွက်များ -->
+    <div class="label-box pos-top" id="box-0">အိမ်ထောင်ကျမယ်</div>
+    <div class="label-box pos-right" id="box-1">ရည်းစားရမယ်</div>
+    <div class="label-box pos-bottom" id="box-2">စီးပွားရေးကောင်းမယ်</div>
+    <div class="label-box pos-left" id="box-3">အလုပ်ကိုင်<br>အဆင်ပြေမယ်</div>
+
+    <!-- အလယ်ဒိုင်ခွက်နှင့် လက်တံမျှား -->
+    <div class="dial">
+      <div class="arrow" id="arrow"></div>
+      <div class="center-dot"></div>
+    </div>
   </div>
 
   <button id="spinBtn">လှည့်မယ်</button>
@@ -181,12 +270,9 @@
   <script>
     // နောက်ခံကြယ်လေးများ ဖန်တီးခြင်း
     const starsContainer = document.getElementById('stars');
-    const starCount = 120;
-
-    for (let i = 0; i < starCount; i++) {
+    for (let i = 0; i < 120; i++) {
       const star = document.createElement('div');
       star.classList.add('star');
-      
       const size = Math.random() * 2.5 + 1;
       star.style.width = `${size}px`;
       star.style.height = `${size}px`;
@@ -194,30 +280,46 @@
       star.style.top = `${Math.random() * 100}%`;
       star.style.setProperty('--duration', `${Math.random() * 3 + 2}s`);
       star.style.setProperty('--opacity', `${Math.random() * 0.7 + 0.3}`);
-      
       starsContainer.appendChild(star);
     }
 
-    // လက်တံလှည့်ခြင်း
     const arrow = document.getElementById('arrow');
     const spinBtn = document.getElementById('spinBtn');
+    const boxes = [
+      document.getElementById('box-0'), // 0 deg (အပေါ်)
+      document.getElementById('box-1'), // 90 deg (ညာ)
+      document.getElementById('box-2'), // 180 deg (အောက်)
+      document.getElementById('box-3')  // 270 deg (ဘယ်)
+    ];
+
     let currentRotation = 0;
 
     spinBtn.addEventListener('click', () => {
       spinBtn.disabled = true;
 
-      const randomDeg = Math.floor(Math.random() * 360);
-      currentRotation += 720 + randomDeg;
+      // အရင်လင်းနေတဲ့အကွက်ရှိရင် ပြန်ဖျောက်မယ်
+      boxes.forEach(box => box.classList.remove('active'));
 
+      // 0, 1, 2, 3 ထဲက ကျပန်းတစ်ခုရွေးမယ်
+      const chosenIndex = Math.floor(Math.random() * 4);
+      const targetAngle = chosenIndex * 90;
+
+      // လက်ရှိဒီဂရီကနေ အနည်းဆုံး ၂ ပတ် (720 deg) လှည့်ပြီး ရွေးထားတဲ့အကွက်တည့်တည့်မှာ ရပ်မယ်
+      const currentMod = currentRotation % 360;
+      let diff = targetAngle - currentMod;
+      if (diff < 0) diff += 360;
+
+      currentRotation += 720 + diff;
       arrow.style.transform = `rotate(${currentRotation}deg)`;
 
-      // ၁ စက္ကန့်ပြည့်ရင် ရပ်ပြီး ခလုတ်ပြန်ဖွင့်မယ်
+      // ၁ စက္ကန့်ပြည့်ရင် မျှားရပ်ပြီး ထိုးပြနေတဲ့အကွက်ကို လင်းလက်စေမယ်
       setTimeout(() => {
+        boxes[chosenIndex].classList.add('active');
         spinBtn.disabled = false;
       }, 1000);
     });
   </script>
 
 </body>
-                        </html>
-                        
+  </html>
+  
